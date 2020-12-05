@@ -1,17 +1,17 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
 const _ = require('underscore');
-const Usuario = require('../models/usuario');
+const Productos = require('../models/productos');
 const app = express();
 
-app.get('/usuario', function(req, res) {
+app.get('/productos', (req, res) => {
     let desde = req.query.desde || 0;
     let hasta = req.query.hasta || 5;
 
-    Usuario.find({ estado: true })
+    Productos.find({})
         .skip(Number(desde))
         .limit(Number(hasta))
-        .exec((err, usuarios) => {
+        .populate('productos', 'nombre precio')
+        .exec((err, productos) => {
             if (err) {
                 return res.status(400).json({
                     of: false,
@@ -22,22 +22,21 @@ app.get('/usuario', function(req, res) {
 
             res.json({
                 ok: true,
-                msg: 'Lista de usuarios obtenida con exito',
-                conteo: usuarios.length,
-                usuarios
+                msg: 'Lista de productos obtenida con exito',
+                conteo: productos.length,
+                productos
             });
         });
 });
 
-app.post('/usuario', function(req, res) {
-    let body = req.body;
-    let usr = new Usuario({
-        nombre: body.nombre,
-        email: body.email,
-        password: bcrypt.hashSync(body.password, 10)
+app.post('/productos', function(req, res) {
+    let prod = new Productos({
+        nombre: req.body.nombre,
+        precio: req.body.precio,
+        usuario: req.body.usuario
     });
 
-    usr.save((err, usrDB) => {
+    prod.save((err, prodDB) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
@@ -47,18 +46,18 @@ app.post('/usuario', function(req, res) {
 
         res.json({
             ok: true,
-            msg: 'Usuario insertado con exito',
-            usrDB
+            msg: 'Producto insertado con exito',
+            prodDB
         });
     });
 });
 
-app.put('/usuario/:id', function(req, res) {
+app.put('/productos/:id', function(req, res) {
     let id = req.params.id;
-    let body = _.pick(req.body, ['nombre', 'email']);
+    let body = _.pick(req.body, ['nombre', 'precio']);
 
-    Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true, context: 'query' },
-        (err, usrDB) => {
+    Productos.findByIdAndUpdate(id, body, { new: true, runValidators: true, context: 'query' },
+        (err, prodDB) => {
             if (err) {
                 return res.status(400).json({
                     ok: false,
@@ -69,8 +68,8 @@ app.put('/usuario/:id', function(req, res) {
 
             res.json({
                 ok: true,
-                msg: 'Usuario actualizado con exito',
-                usuario: usrDB
+                msg: 'Producto actualizado con exito',
+                productos: prodDB
             });
         });
 });

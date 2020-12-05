@@ -7,6 +7,7 @@ app.get('/categoria', (req, res) => {
     let desde = req.query.desde || 0;
     let hasta = req.query.hasta || 5;
 
+
     Categoria.find({})
         .skip(Number(desde))
         .limit(Number(hasta))
