@@ -11,7 +11,7 @@ app.get('/usuario', function(req, res) {
     Usuario.find({ estado: true })
         .skip(Number(desde))
         .limit(Number(hasta))
-        .exec((err, usuario) => {
+        .exec((err, usuarios) => {
             if (err) {
                 return res.status(400).json({
                     ok: false,
@@ -24,7 +24,7 @@ app.get('/usuario', function(req, res) {
                 ok: true,
                 msg: 'Lista de usuarios obtenida con exito',
                 conteo: usuarios.length,
-                usuario
+                usuarios
             });
         });
 });
