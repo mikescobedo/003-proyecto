@@ -3,11 +3,11 @@ const _ = require('underscore');
 const Productos = require('../models/productos');
 const app = express();
 
-app.get('/productos', (req, res) => {
+app.get('/productos', function(req, res) {
     let desde = req.query.desde || 0;
     let hasta = req.query.hasta || 5;
 
-    Productos.find({})
+    Productos.find({ disponible: true })
         .skip(Number(desde))
         .limit(Number(hasta))
         .populate('productos', 'nombre precio')
@@ -74,28 +74,10 @@ app.put('/productos/:id', function(req, res) {
         });
 });
 
-app.delete('/usuario/:id', function(req, res) {
-    // let id = req.params.id;
-
-    // Usuario.deleteOne({ _id: id }, (err, usuarioBorrado) => {
-    //     if (err) {
-    //         return res.status(400).json({
-    //             ok: false,
-    //             msg: 'Ocurrio un error al momento de eliminar',
-    //             err
-    //         });
-    //     }
-
-    //     res.json({
-    //         ok: true,
-    //         msg: 'Usuario eliminado con exito',
-    //         usuarioBorrado
-    //     });
-    // });
-
+app.delete('/productos/:id', function(req, res) {
     let id = req.params.id;
 
-    Usuario.findByIdAndUpdate(id, { estado: false }, { new: true, runValidators: true, context: 'query' }, (err, usrDB) => {
+    Productos.findByIdAndUpdate(id, { disponible: false }, { new: true, runValidators: true, context: 'query' }, (err, prodDB) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
@@ -106,8 +88,8 @@ app.delete('/usuario/:id', function(req, res) {
 
         res.json({
             ok: true,
-            msg: 'Usuario eliminado con exito',
-            usrDB
+            msg: 'Producto eliminado con exito',
+            prodDB
         });
     });
 });
