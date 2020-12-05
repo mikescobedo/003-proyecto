@@ -11,10 +11,10 @@ app.get('/usuario', function(req, res) {
     Usuario.find({ estado: true })
         .skip(Number(desde))
         .limit(Number(hasta))
-        .exec((err, usuarios) => {
+        .exec((err, usuario) => {
             if (err) {
                 return res.status(400).json({
-                    of: false,
+                    ok: false,
                     msg: 'Ocurrio un error al momento de consular',
                     err
                 });
@@ -24,7 +24,7 @@ app.get('/usuario', function(req, res) {
                 ok: true,
                 msg: 'Lista de usuarios obtenida con exito',
                 conteo: usuarios.length,
-                usuarios
+                usuario
             });
         });
 });

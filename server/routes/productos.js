@@ -14,7 +14,7 @@ app.get('/productos', function(req, res) {
         .exec((err, productos) => {
             if (err) {
                 return res.status(400).json({
-                    of: false,
+                    ok: false,
                     msg: 'Ocurrio un error al momento de consular',
                     err
                 });
