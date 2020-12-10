@@ -1,11 +1,20 @@
 require('./config/config');
 const express = require('express');
 const mongoose = require('mongoose');
+const morgan = require('morgan')
+const cors = require('cors')
 const bodyParser = require('body-parser');
 const app = express();
 
+
+
 // parse application/x-www-form-urlencoded
+app.set('port', process.env.PORT || 4000);
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors());
+app.use(morgan('dev'));
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 
 // parse application/json
 app.use(bodyParser.json());
@@ -17,9 +26,9 @@ app.get('/', function(req, res) {
 app.use(require('./routes/usuario'));
 app.use(require('./routes/categoria'));
 app.use(require('./routes/productos'));
-app.use(require('./routes/login'));
 
-mongoose.connect('mongodb+srv://admin:Huesos10@cluster0.hm11y.mongodb.net/cafeteria', {
+
+mongoose.connect('mongodb+srv://admin:4w0sutags@cluster0.t993c.mongodb.net/cafeteria', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
